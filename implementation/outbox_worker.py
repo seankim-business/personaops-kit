@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import Callable
 
 from .models import OutboxMessage
-from .store import InMemoryStore
+from .store import StoreBackend
 from .trace import trace_log
 
 SenderFn = Callable[[OutboxMessage], None]
 
 
-def process_outbox_once(store: InMemoryStore, sender: SenderFn, *, max_retries: int = 3) -> dict:
+def process_outbox_once(store: StoreBackend, sender: SenderFn, *, max_retries: int = 3) -> dict:
     processed = 0
     sent = 0
     failed = 0
@@ -29,7 +29,7 @@ def process_outbox_once(store: InMemoryStore, sender: SenderFn, *, max_retries: 
             )
         except Exception as exc:  # noqa: BLE001
             store.mark_outbox_retry(msg.idempotency_key, str(exc), max_retries=max_retries)
-            latest = store.outbox[msg.idempotency_key]
+            latest = store.get_outbox(msg.idempotency_key)
             if latest.status == "dead_letter":
                 dead_letter += 1
                 trace_log(

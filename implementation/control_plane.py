@@ -22,12 +22,15 @@ from .models import (
 )
 from .outbox_worker import process_outbox_once
 from .policy import PolicyEngine
+from .settings import get_settings
 from .state_machine import FlowStateMachine, InvalidTransition
-from .store import InMemoryStore, NotFoundError, RevisionConflict
+from .store import NotFoundError, RevisionConflict
+from .store_factory import build_store
 from .trace import trace_log
 
-app = FastAPI(title="PersonaOps Control Plane", version="0.2.0")
-store = InMemoryStore()
+app = FastAPI(title="PersonaOps Control Plane", version="0.3.0")
+settings = get_settings()
+store = build_store()
 policy_engine = PolicyEngine()
 state_machine = FlowStateMachine()
 context_compiler = ContextCompiler()
@@ -47,16 +50,17 @@ class ApprovalCreateInput(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "service": "personaops-control-plane", "version": "0.2.0"}
+    return {
+        "ok": True,
+        "service": "personaops-control-plane",
+        "version": "0.3.0",
+        "store_backend": settings.store_backend,
+    }
 
 
 @app.post("/events")
 def ingest_event(event: CanonicalEvent) -> dict:
-    flow = store.get_flow(event.flow_id)
-    if flow is None:
-        flow = FlowSnapshot(flow_id=event.flow_id, project_id=event.project_id)
-        store.flows[event.flow_id] = flow
-
+    store.ensure_flow(event.flow_id, event.project_id)
     store.append_event(event)
     trace_log(
         "event_ingested",
@@ -154,7 +158,7 @@ def request_approval(data: ApprovalCreateInput) -> dict:
     try:
         state_machine.validate(flow.status, "waiting_approval", approval_granted=False)
         flow.status = "waiting_approval"
-        store.upsert_flow(flow, data.expected_revision)
+        flow = store.upsert_flow(flow, data.expected_revision)
     except (InvalidTransition, RevisionConflict) as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
 
@@ -196,7 +200,8 @@ def get_approval(approval_id: str) -> dict:
 
 @app.get("/approvals")
 def list_approvals() -> dict:
-    return {"count": len(store.approvals), "items": [x.model_dump() for x in store.approvals.values()]}
+    items = [x.model_dump() for x in store.list_approvals()]
+    return {"count": len(items), "items": items}
 
 
 @app.post("/approvals/{approval_id}/decision")
@@ -220,7 +225,7 @@ def decide_approval(approval_id: str, req: ApprovalDecisionRequest) -> dict:
         state_machine.validate(flow.status, target_status, approval_granted=req.approved)
         expected = flow.revision
         flow.status = target_status
-        store.upsert_flow(flow, expected)
+        flow = store.upsert_flow(flow, expected)
     except (InvalidTransition, RevisionConflict) as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
 
@@ -288,16 +293,16 @@ def outbox_enqueue(data: OutboxEnqueueRequest) -> dict:
 @app.post("/outbox/process_once")
 def outbox_process_once() -> dict:
     def sender(msg: OutboxMessage) -> None:
-        # placeholder sender; integrate real channel senders in v0.3
+        # placeholder sender; integrate real channel senders in v0.4
         if msg.body.get("force_fail"):
             raise RuntimeError("forced send failure for testing")
 
-    return process_outbox_once(store, sender)
+    return process_outbox_once(store, sender, max_retries=settings.outbox_max_retries)
 
 
 @app.get("/outbox")
 def outbox_list() -> dict:
-    items = [msg.model_dump() for msg in store.outbox.values()]
+    items = [msg.model_dump() for msg in store.list_outbox()]
     return {"count": len(items), "items": items}
 
 
@@ -307,6 +312,7 @@ def get_context(flow_id: str) -> dict:
     if not flow:
         raise HTTPException(status_code=404, detail="flow not found")
 
-    related = [f"{e.type}:{e.task_id}" for e in store.events if e.flow_id == flow_id][-20:]
+    events = store.list_events_by_flow(flow_id, limit=20)
+    related = [f"{e.type}:{e.task_id}" for e in events]
     profile = {"name": "Persona", "tone": "professional-friendly"}
     return context_compiler.compile(flow, related, profile)

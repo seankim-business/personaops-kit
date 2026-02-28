@@ -28,6 +28,16 @@ Run tests:
 make test
 ```
 
+Run with Postgres backend (optional):
+
+```bash
+export PERSONAOPS_STORE_BACKEND=postgres
+export PERSONAOPS_POSTGRES_DSN='postgresql://user:pass@localhost:5432/personaops'
+# apply schema first
+psql "$PERSONAOPS_POSTGRES_DSN" -f implementation/sql/001_init.sql
+make run
+```
+
 Seed GitHub issues (optional):
 
 ```bash

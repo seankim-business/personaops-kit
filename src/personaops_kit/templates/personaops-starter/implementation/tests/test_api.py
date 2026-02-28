@@ -6,12 +6,9 @@ from implementation.control_plane import app, store
 
 
 def setup_function():
-    # reset in-memory singleton store between tests
-    store.events.clear()
-    store.flows.clear()
-    store.idempotency_keys.clear()
-    store.approvals.clear()
-    store.outbox.clear()
+    # reset singleton store between tests when backend supports reset
+    if hasattr(store, "reset"):
+        store.reset()
 
 
 def test_discord_inbound_creates_flow_and_event():
@@ -196,9 +193,37 @@ def test_outbox_idempotency_and_dead_letter():
 
     for _ in range(4):
         client.post("/outbox/process_once")
-        if fail_key in store.outbox and store.outbox[fail_key].status != "dead_letter":
-            store.outbox[fail_key].next_attempt_at = datetime.now(timezone.utc)
+        if hasattr(store, "force_outbox_due"):
+            try:
+                store.force_outbox_due(fail_key)
+            except Exception:
+                pass
+        else:
+            # fallback for persistent stores where next_attempt_at cannot be mutated from tests
+            pass
 
     outbox = client.get("/outbox").json()["items"]
     fail_item = next(x for x in outbox if x["idempotency_key"] == fail_key)
     assert fail_item["status"] == "dead_letter"
+
+
+def test_context_endpoint_returns_recent_events():
+    client = TestClient(app)
+    client.post(
+        "/adapters/discord/inbound",
+        json={
+            "message_id": "m_ctx",
+            "channel_id": "c_1",
+            "sender_id": "u_ctx",
+            "content": "context me",
+            "project_id": "proj_ctx",
+            "flow_id": "flow_ctx",
+            "task_id": "task_ctx",
+            "persona_id": "persona_ctx",
+        },
+    )
+
+    res = client.get("/context/flow_ctx")
+    assert res.status_code == 200
+    body = res.json()
+    assert body["flow"]["flow_id"] == "flow_ctx"

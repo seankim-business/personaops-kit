@@ -34,13 +34,24 @@ CREATE TABLE IF NOT EXISTS outbox (
   idempotency_key TEXT UNIQUE NOT NULL,
   channel TEXT NOT NULL,
   target TEXT NOT NULL,
+  flow_id TEXT NOT NULL,
+  task_id TEXT NOT NULL,
+  intent TEXT NOT NULL,
   body JSONB NOT NULL,
   status TEXT NOT NULL DEFAULT 'pending',
   retry_count INTEGER NOT NULL DEFAULT 0,
   next_attempt_at TIMESTAMPTZ,
+  last_error TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE outbox ADD COLUMN IF NOT EXISTS flow_id TEXT;
+ALTER TABLE outbox ADD COLUMN IF NOT EXISTS task_id TEXT;
+ALTER TABLE outbox ADD COLUMN IF NOT EXISTS intent TEXT;
+ALTER TABLE outbox ADD COLUMN IF NOT EXISTS last_error TEXT;
+
+CREATE INDEX IF NOT EXISTS idx_outbox_due ON outbox(status, next_attempt_at);
 
 CREATE TABLE IF NOT EXISTS approvals (
   approval_id TEXT PRIMARY KEY,

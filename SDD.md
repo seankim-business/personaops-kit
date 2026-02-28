@@ -37,6 +37,8 @@ Three-plane architecture:
   - Schedules and tracks execution jobs.
 - Outbox
   - Reliable outbound send queue + idempotency.
+- Store Factory
+  - Selects memory/postgres backend at runtime via environment.
 - Context Compiler
   - Builds minimal per-turn context pack.
 - Observability
@@ -131,9 +133,12 @@ Output:
 ## 12. Deployment (v1)
 
 - Control plane: Python FastAPI service.
-- Stores: memory backend for local dev; Postgres repositories for production persistence.
+- Backend selection via env:
+  - `PERSONAOPS_STORE_BACKEND=memory|postgres`
+  - `PERSONAOPS_POSTGRES_DSN=...` (required when postgres)
+- Stores: memory backend for local dev; PostgresStore + repositories for production persistence.
 - Worker: outbox worker for reliable outbound processing (retry + dead-letter).
-- Channel adapters: Discord adapter included in v0.2 skeleton.
+- Channel adapters: Discord adapter included in v0.3 baseline.
 - Temporal: orchestration durability for long-running jobs (next integration loop).
 
 ## 13. Failure Handling

@@ -32,10 +32,24 @@
 - Package build: PASS (`python -m build`)
 - Package injection smoke test: PASS (`personaops-kit inject ...`)
 
-### Next Loop (SDD -> Impl v0.4)
-1. Wire real Postgres backend into control-plane via backend feature flag.
-2. Persist approvals and outbox state in Postgres repositories.
-3. Integrate real outbound sender per channel (Discord/Slack adapters).
-4. Add Langfuse trace emitter and span taxonomy.
-5. Add Promptfoo CI gate execution step.
-6. Add Temporal workflow for long-running task orchestration.
+### Completed (v0.4 progress)
+- Added backend factory (`implementation/store_factory.py`) with `PERSONAOPS_STORE_BACKEND` + `PERSONAOPS_POSTGRES_DSN` support
+- Added `PostgresStore` backend (`implementation/store_postgres.py`)
+- Extended Postgres repositories with approvals/outbox/event-list methods (`implementation/repository_postgres.py`)
+- Updated SQL schema for outbox/approvals durability fields (`implementation/sql/001_init.sql`)
+- Refactored control plane to backend-agnostic store operations (`implementation/control_plane.py`)
+- Added store backend tests (`implementation/tests/test_store_factory.py`)
+- Added context endpoint test and backend-safe API test reset updates (`implementation/tests/test_api.py`)
+- Synced packaged starter template with latest backend work (`src/personaops_kit/templates/personaops-starter/*`)
+
+### Validation (latest)
+- Pytest execution: PASS (`17 passed`)
+- Package build: PASS (`python -m build`)
+- Package injection smoke test (OpenClaw + NanoBot profile): PASS
+
+### Next Loop (SDD -> Impl v0.5)
+1. Integrate real outbound sender per channel (Discord/Slack adapters).
+2. Add Langfuse trace emitter and span taxonomy.
+3. Add Promptfoo CI gate execution step with managed API key flow.
+4. Add Temporal workflow for long-running task orchestration.
+5. Add Postgres integration test profile (docker-compose).
