@@ -13,6 +13,7 @@
 - Added sprint backlog + traceability matrix (`runbooks/*.md`)
 - Added eval starter config (`evals/promptfooconfig.yaml`)
 - Added CI skeleton (`.github/workflows/ci.yml`)
+- Added Postgres persistence scaffolding (`implementation/sql/001_init.sql`, `implementation/repository_postgres.py`)
 
 ### Validation
 - Python syntax compile: PASS (`python3 -m compileall implementation`)
