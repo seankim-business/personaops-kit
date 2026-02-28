@@ -12,10 +12,8 @@ Execution loop is fixed:
 
 ```bash
 cd personaops
-python3 -m venv .venv
-source .venv/bin/activate
-pip install fastapi uvicorn pydantic pytest pyyaml
-uvicorn implementation.control_plane:app --reload --port 8081
+make setup
+make run
 ```
 
 Health check:
@@ -27,7 +25,13 @@ curl http://localhost:8081/health
 Run tests:
 
 ```bash
-pytest implementation/tests -q
+make test
+```
+
+Seed GitHub issues (optional):
+
+```bash
+./scripts/bootstrap_issues.sh your-org/your-repo
 ```
 
 Key API routes:

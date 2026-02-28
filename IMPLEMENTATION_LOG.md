@@ -19,10 +19,13 @@
 - Implemented outbox worker with retry/backoff + dead-letter behavior
 - Implemented Discord inbound adapter endpoint
 - Added structured trace logging helper
+- Added developer ergonomics (`Makefile`, bootstrap issue script)
+- Added policy-level unit tests (`implementation/tests/test_policy.py`)
+- Updated README with make-based quickstart + issue bootstrap usage
 
 ### Validation
 - Python syntax compile: PASS (`python3 -m compileall implementation`)
-- Pytest execution: PASS (`7 passed`)
+- Pytest execution: PASS (`9 passed`)
 
 ### Next Loop (SDD -> Impl v0.3)
 1. Wire real Postgres backend into control-plane via backend feature flag.
