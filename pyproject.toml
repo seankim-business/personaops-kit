@@ -14,6 +14,11 @@ authors = [
 license = "MIT"
 dependencies = []
 
+[project.optional-dependencies]
+observability = ["langfuse>=2.0.0"]
+orchestration = ["temporalio>=1.8.0"]
+all = ["langfuse>=2.0.0", "temporalio>=1.8.0"]
+
 [project.scripts]
 personaops-kit = "personaops_kit.cli:main"
 

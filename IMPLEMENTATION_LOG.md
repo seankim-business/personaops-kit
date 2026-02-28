@@ -47,9 +47,21 @@
 - Package build: PASS (`python -m build`)
 - Package injection smoke test (OpenClaw + NanoBot profile): PASS
 
-### Next Loop (SDD -> Impl v0.5)
+### Completed (v0.5 progress)
+- Added optional Langfuse fail-open emitter in trace layer (`implementation/trace.py`)
+- Added Temporal integration scaffold (`implementation/temporal_workflow.py`)
+- Added observability safety tests (`implementation/tests/test_observability.py`)
+- Added optional package extras (`pyproject.toml`: `observability`, `orchestration`)
+- Updated docs/runbook for package release and backend/env operation
+
+### Validation (latest)
+- Pytest execution: PASS (`19 passed`)
+- Package build: PASS (`python -m build`)
+- Package injection smoke test (OpenClaw + NanoBot profile): PASS
+
+### Next Loop (SDD -> Impl v0.6)
 1. Integrate real outbound sender per channel (Discord/Slack adapters).
-2. Add Langfuse trace emitter and span taxonomy.
+2. Implement Langfuse span taxonomy + trace correlation IDs across endpoints.
 3. Add Promptfoo CI gate execution step with managed API key flow.
-4. Add Temporal workflow for long-running task orchestration.
+4. Implement Temporal worker registration + workflow execution harness.
 5. Add Postgres integration test profile (docker-compose).

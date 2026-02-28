@@ -67,6 +67,16 @@ Install locally:
 python -m pip install dist/personaops_kit-*.whl
 ```
 
+Install with optional extras:
+
+```bash
+# Langfuse trace integration
+python -m pip install 'dist/personaops_kit-*.whl[observability]'
+
+# Temporal workflow integration
+python -m pip install 'dist/personaops_kit-*.whl[orchestration]'
+```
+
 Create starter in any directory:
 
 ```bash

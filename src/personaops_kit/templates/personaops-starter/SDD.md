@@ -117,6 +117,9 @@ Output:
   - `policy_evaluate`
   - `dispatch_worker`
   - `outbox_send`
+- Langfuse integration mode:
+  - Enabled when `LANGFUSE_PUBLIC_KEY` + `LANGFUSE_SECRET_KEY` are present.
+  - Fail-open behavior (trace errors must not break request handling).
 
 ## 11. Testing Strategy
 
@@ -139,7 +142,7 @@ Output:
 - Stores: memory backend for local dev; PostgresStore + repositories for production persistence.
 - Worker: outbox worker for reliable outbound processing (retry + dead-letter).
 - Channel adapters: Discord adapter included in v0.3 baseline.
-- Temporal: orchestration durability for long-running jobs (next integration loop).
+- Temporal: orchestration scaffold included (`implementation/temporal_workflow.py`), full worker registration pending next integration loop.
 
 ## 13. Failure Handling
 
