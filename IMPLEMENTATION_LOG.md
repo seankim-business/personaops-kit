@@ -16,7 +16,7 @@
 
 ### Validation
 - Python syntax compile: PASS (`python3 -m compileall implementation`)
-- Pytest execution: BLOCKED (pytest not installed in current runtime)
+- Pytest execution: PASS (`3 passed`)
 
 ### Next Loop (SDD -> Impl v0.2)
 1. Replace in-memory store with Postgres repositories.
