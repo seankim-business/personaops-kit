@@ -22,12 +22,17 @@
 - Added developer ergonomics (`Makefile`, bootstrap issue script)
 - Added policy-level unit tests (`implementation/tests/test_policy.py`)
 - Updated README with make-based quickstart + issue bootstrap usage
+- Added portable package scaffold (`pyproject.toml`, `src/personaops_kit/*`, `MANIFEST.in`)
+- Added packaged starter template for easy injection into OpenClaw/NanoBot workspaces
+- Added package-level tests (`tests_kit/test_scaffold.py`)
 
 ### Validation
-- Python syntax compile: PASS (`python3 -m compileall implementation`)
-- Pytest execution: PASS (`9 passed`)
+- Python syntax compile: PASS (`python3 -m compileall implementation src`)
+- Pytest execution: PASS (`12 passed`)
+- Package build: PASS (`python -m build`)
+- Package injection smoke test: PASS (`personaops-kit inject ...`)
 
-### Next Loop (SDD -> Impl v0.3)
+### Next Loop (SDD -> Impl v0.4)
 1. Wire real Postgres backend into control-plane via backend feature flag.
 2. Persist approvals and outbox state in Postgres repositories.
 3. Integrate real outbound sender per channel (Discord/Slack adapters).

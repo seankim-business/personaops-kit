@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "personaops/flow_state.schema.json",
+  "title": "PersonaOps Flow State Snapshot",
+  "type": "object",
+  "required": [
+    "flow_id",
+    "project_id",
+    "status",
+    "revision",
+    "updated_at",
+    "open_tasks",
+    "latest_decisions",
+    "owners"
+  ],
+  "properties": {
+    "flow_id": { "type": "string", "pattern": "^flow_[a-zA-Z0-9_-]+$" },
+    "project_id": { "type": "string", "pattern": "^proj_[a-zA-Z0-9_-]+$" },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "triage",
+        "executing",
+        "waiting_approval",
+        "ready_to_send",
+        "sent",
+        "done",
+        "blocked"
+      ]
+    },
+    "revision": { "type": "integer", "minimum": 0 },
+    "open_tasks": { "type": "array", "items": { "type": "string" } },
+    "latest_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["decision_id", "summary", "at"],
+        "properties": {
+          "decision_id": { "type": "string" },
+          "summary": { "type": "string" },
+          "at": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "owners": { "type": "array", "items": { "type": "string" } },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

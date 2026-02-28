@@ -1,0 +1,36 @@
+version: 1
+roles:
+  front:
+    allow:
+      - read_flow
+      - draft_response
+      - enqueue_outbound
+    deny:
+      - execute_tool
+      - mutate_policy
+      - approve_high_risk
+  ops:
+    allow:
+      - read_flow
+      - mutate_flow
+      - execute_tool
+      - mutate_policy
+      - request_approval
+      - approve_high_risk
+      - enqueue_outbound
+  worker:
+    allow:
+      - execute_tool
+      - report_result
+    deny:
+      - enqueue_outbound
+      - mutate_policy
+      - approve_high_risk
+  approver:
+    allow:
+      - approve_high_risk
+      - reject_high_risk
+
+notes:
+  - worker must never send messages directly to external channels
+  - front must never mutate policy or internal system configuration

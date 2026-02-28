@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "personaops-kit"
+version = "0.1.0"
+description = "Portable PersonaOps starter package for OpenClaw/NanoBot workspaces"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "Persona Platform" }
+]
+license = "MIT"
+dependencies = []
+
+[project.scripts]
+personaops-kit = "personaops_kit.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["implementation/tests", "tests_kit"]

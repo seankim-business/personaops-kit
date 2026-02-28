@@ -1,0 +1,28 @@
+version: 1
+rules:
+  - id: high_risk_legal_commitment
+    match:
+      category: legal_commitment
+    decision: requires_approval
+
+  - id: high_risk_financial_transaction
+    match:
+      category: financial_transaction
+    decision: requires_approval
+
+  - id: high_risk_account_privilege
+    match:
+      category: account_privilege_change
+    decision: requires_approval
+
+  - id: high_risk_public_announcement
+    match:
+      category: public_announcement
+    decision: requires_approval
+
+  - id: low_risk_internal_update
+    match:
+      category: internal_update
+    decision: allow
+
+default_decision: deny

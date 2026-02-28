@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "personaops/event.schema.json",
+  "title": "PersonaOps Canonical Event",
+  "type": "object",
+  "required": [
+    "event_id",
+    "project_id",
+    "flow_id",
+    "task_id",
+    "actor_id",
+    "persona_id",
+    "channel",
+    "type",
+    "revision",
+    "trace_id",
+    "timestamp",
+    "payload"
+  ],
+  "properties": {
+    "event_id": { "type": "string", "pattern": "^evt_[a-zA-Z0-9_-]+$" },
+    "project_id": { "type": "string", "pattern": "^proj_[a-zA-Z0-9_-]+$" },
+    "flow_id": { "type": "string", "pattern": "^flow_[a-zA-Z0-9_-]+$" },
+    "task_id": { "type": "string", "pattern": "^task_[a-zA-Z0-9_-]+$" },
+    "actor_id": { "type": "string", "pattern": "^actor_[a-zA-Z0-9_-]+$" },
+    "persona_id": { "type": "string", "pattern": "^persona_[a-zA-Z0-9_-]+$" },
+    "channel": {
+      "type": "string",
+      "enum": ["discord", "slack", "telegram", "whatsapp", "imessage", "internal"]
+    },
+    "channel_message_id": { "type": ["string", "null"] },
+    "type": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "state_change",
+        "tool_request",
+        "tool_result",
+        "approval_requested",
+        "approval_decision",
+        "outbound_enqueued",
+        "outbound_sent",
+        "outbound_failed"
+      ]
+    },
+    "revision": { "type": "integer", "minimum": 0 },
+    "trace_id": { "type": "string", "pattern": "^trace_[a-zA-Z0-9_-]+$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "payload": { "type": "object" }
+  },
+  "additionalProperties": false
+}
