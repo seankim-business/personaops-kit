@@ -17,3 +17,11 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run tests
         run: pytest implementation/tests -q
+
+      - name: Promptfoo regression (optional when OPENAI_API_KEY is configured)
+        if: ${{ secrets.OPENAI_API_KEY != '' }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          npm i -g promptfoo
+          promptfoo eval -c evals/promptfooconfig.yaml

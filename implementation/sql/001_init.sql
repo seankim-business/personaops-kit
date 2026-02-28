@@ -41,3 +41,19 @@ CREATE TABLE IF NOT EXISTS outbox (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS approvals (
+  approval_id TEXT PRIMARY KEY,
+  project_id TEXT NOT NULL,
+  flow_id TEXT NOT NULL,
+  task_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  requested_by TEXT NOT NULL,
+  requested_at TIMESTAMPTZ NOT NULL,
+  decided_by TEXT,
+  decided_at TIMESTAMPTZ,
+  reason TEXT,
+  note TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_approvals_flow_id ON approvals(flow_id);

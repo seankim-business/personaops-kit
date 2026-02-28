@@ -2,10 +2,12 @@
 
 | Requirement | Design Component | Implementation Artifact |
 |---|---|---|
-| FR-01 Event normalization | Channel Adapter + Canonical Event | `schemas/event.schema.json`, `/events` endpoint |
-| FR-04 State transition guard | Flow State Machine | `flows/default_flow.yaml`, `implementation/state_machine.py` |
+| FR-01 Event normalization | Channel Adapter + Canonical Event | `schemas/event.schema.json`, `/events`, `/adapters/discord/inbound`, `implementation/discord_adapter.py` |
+| FR-04 State transition guard | Flow State Machine | `flows/default_flow.yaml`, `implementation/state_machine.py`, `/flows/{flow_id}/transition` |
 | FR-05 Revision concurrency | Optimistic lock | `implementation/store.py` |
-| FR-06 Context packs | Context Compiler | `implementation/context_compiler.py` |
-| FR-09 Outbound idempotency | Outbox design | `implementation/store.py`, `/outbox/enqueue` |
-| FR-11 Approval gating | Policy engine + approval decision | `policies/approval_rules.yaml`, `implementation/policy.py` |
-| FR-12 Observability/eval | Trace + regression | `runbooks/sprint-01-02-backlog.md`, `evals/promptfooconfig.yaml` |
+| FR-06 Context packs | Context Compiler | `implementation/context_compiler.py`, `/context/{flow_id}` |
+| FR-09 Outbound idempotency | Outbox design | `implementation/store.py`, `/outbox/enqueue`, `implementation/outbox_worker.py` |
+| FR-10 Audit/replay foundation | Event append log | `implementation/store.py`, `/events` |
+| FR-11 Approval gating | Policy engine + approval workflow | `policies/approval_rules.yaml`, `implementation/policy.py`, `/approvals/request`, `/approvals/{approval_id}/decision` |
+| FR-12 Observability/eval | Trace + regression | `implementation/trace.py`, `runbooks/sprint-01-02-backlog.md`, `evals/promptfooconfig.yaml` |
+| FR-13 Persistence path | Postgres repositories + SQL schema | `implementation/repository_postgres.py`, `implementation/sql/001_init.sql` |

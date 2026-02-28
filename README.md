@@ -23,3 +23,17 @@ Health check:
 ```bash
 curl http://localhost:8081/health
 ```
+
+Run tests:
+
+```bash
+pytest implementation/tests -q
+```
+
+Key API routes:
+- `POST /adapters/discord/inbound`
+- `POST /approvals/request`
+- `GET /approvals`, `GET /approvals/{approval_id}`
+- `POST /approvals/{approval_id}/decision`
+- `POST /outbox/enqueue`
+- `POST /outbox/process_once`

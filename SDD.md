@@ -131,9 +131,10 @@ Output:
 ## 12. Deployment (v1)
 
 - Control plane: Python FastAPI service.
-- Stores: Postgres (event + flow), Redis (queue/cache) optional.
-- Worker: async process pool.
-- Temporal: orchestration durability for long-running jobs.
+- Stores: memory backend for local dev; Postgres repositories for production persistence.
+- Worker: outbox worker for reliable outbound processing (retry + dead-letter).
+- Channel adapters: Discord adapter included in v0.2 skeleton.
+- Temporal: orchestration durability for long-running jobs (next integration loop).
 
 ## 13. Failure Handling
 

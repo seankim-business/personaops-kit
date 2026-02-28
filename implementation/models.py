@@ -80,3 +80,59 @@ class PolicyInput(BaseModel):
 class PolicyDecision(BaseModel):
     decision: Literal["allow", "deny", "requires_approval"]
     rule_id: str | None = None
+
+
+class ApprovalRequest(BaseModel):
+    approval_id: str
+    project_id: str
+    flow_id: str
+    task_id: str
+    requested_by: str
+    category: str
+    reason: str
+    trace_id: str
+    requested_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ApprovalDecisionRequest(BaseModel):
+    approved_by: str
+    approved: bool
+    note: str | None = None
+    trace_id: str
+
+
+class ApprovalState(BaseModel):
+    approval_id: str
+    project_id: str
+    flow_id: str
+    task_id: str
+    status: Literal["pending", "approved", "rejected"]
+    requested_by: str
+    requested_at: datetime
+    decided_by: str | None = None
+    decided_at: datetime | None = None
+    reason: str | None = None
+    note: str | None = None
+
+
+class OutboxEnqueueRequest(BaseModel):
+    channel: str
+    target: str
+    flow_id: str
+    task_id: str
+    intent: str
+    body: dict[str, Any] = Field(default_factory=dict)
+
+
+class OutboxMessage(BaseModel):
+    idempotency_key: str
+    channel: str
+    target: str
+    flow_id: str
+    task_id: str
+    intent: str
+    body: dict[str, Any] = Field(default_factory=dict)
+    status: Literal["pending", "sent", "failed", "dead_letter"] = "pending"
+    retry_count: int = 0
+    next_attempt_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    last_error: str | None = None
