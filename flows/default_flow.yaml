@@ -1,0 +1,30 @@
+version: 1
+name: default_persona_flow
+states:
+  - new
+  - triage
+  - executing
+  - waiting_approval
+  - ready_to_send
+  - sent
+  - done
+  - blocked
+
+transitions:
+  new: [triage, blocked]
+  triage: [executing, waiting_approval, blocked]
+  executing: [waiting_approval, ready_to_send, blocked]
+  waiting_approval: [executing, ready_to_send, blocked]
+  ready_to_send: [sent, blocked]
+  sent: [done, blocked]
+  done: []
+  blocked: [triage, executing, done]
+
+terminal_states:
+  - done
+
+guards:
+  - id: requires_approval_before_send
+    when:
+      to: sent
+    check: approval_granted == true

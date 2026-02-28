@@ -1,0 +1,27 @@
+name: Incident
+description: Production incident report
+title: "[INC] "
+labels: ["type:incident", "status:triage"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - SEV-1
+        - SEV-2
+        - SEV-3
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+    validations:
+      required: true
+
+  - type: textarea
+    id: actions
+    attributes:
+      label: Corrective actions

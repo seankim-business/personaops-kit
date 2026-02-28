@@ -1,0 +1,30 @@
+name: Story
+description: Implementation story for PersonaOps
+title: "[PER-XXX] "
+labels: ["type:story", "status:triage"]
+body:
+  - type: textarea
+    id: background
+    attributes:
+      label: Background
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: Testable checklist
+      placeholder: |
+        - [ ] Given ... When ... Then ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: observability
+    attributes:
+      label: Observability
+      placeholder: |
+        - trace_id present
+        - event_id and revision logs
