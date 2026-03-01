@@ -37,6 +37,8 @@ Three-plane architecture:
   - Schedules and tracks execution jobs.
 - Outbox
   - Reliable outbound send queue + idempotency.
+- Outbound Sender
+  - Mode-driven sender (`mock` / `webhook`) for channel delivery.
 - Store Factory
   - Selects memory/postgres backend at runtime via environment.
 - Context Compiler
@@ -89,6 +91,12 @@ Allowed transitions are defined in `flows/default_flow.yaml`.
 - Idempotency key format:
   - `{channel}:{target}:{flow_id}:{task_id}:{intent_hash}`
 - Sender retries with backoff; duplicate keys are ignored.
+- Sender mode (`PERSONAOPS_OUTBOUND_MODE`):
+  - `mock` (default): trace-only send for safe test/dev environments.
+  - `webhook`: real sends via channel webhooks (Discord/Slack).
+- Webhook mode requires channel-specific URLs:
+  - `PERSONAOPS_DISCORD_WEBHOOK_URL`
+  - `PERSONAOPS_SLACK_WEBHOOK_URL`
 
 ## 8. Context Compilation
 

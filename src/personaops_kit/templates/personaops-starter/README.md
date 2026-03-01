@@ -38,10 +38,34 @@ psql "$PERSONAOPS_POSTGRES_DSN" -f implementation/sql/001_init.sql
 make run
 ```
 
+Outbound sender modes:
+
+```bash
+# default (safe local mode)
+export PERSONAOPS_OUTBOUND_MODE=mock
+
+# webhook mode (real sends)
+export PERSONAOPS_OUTBOUND_MODE=webhook
+export PERSONAOPS_DISCORD_WEBHOOK_URL='https://discord.com/api/webhooks/...'
+export PERSONAOPS_SLACK_WEBHOOK_URL='https://hooks.slack.com/services/...'
+```
+
 Seed GitHub issues (optional):
 
 ```bash
 ./scripts/bootstrap_issues.sh your-org/your-repo
+```
+
+Optional gates/utilities:
+
+```bash
+# prompt regression gate (skips when OPENAI_API_KEY is missing)
+make promptfoo
+
+# local Postgres smoke
+make postgres-up
+make postgres-smoke
+make postgres-down
 ```
 
 Key API routes:
@@ -51,6 +75,7 @@ Key API routes:
 - `POST /approvals/{approval_id}/decision`
 - `POST /outbox/enqueue`
 - `POST /outbox/process_once`
+- `GET /temporal/bootstrap`
 
 ## Portable package (inject into other OpenClaw/NanoBot workspaces)
 

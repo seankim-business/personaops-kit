@@ -22,10 +22,12 @@ from .models import (
 )
 from .outbox_worker import process_outbox_once
 from .policy import PolicyEngine
+from .sender import SenderError, build_sender
 from .settings import get_settings
 from .state_machine import FlowStateMachine, InvalidTransition
 from .store import NotFoundError, RevisionConflict
 from .store_factory import build_store
+from .temporal_worker import start_worker_dry_run
 from .trace import trace_log
 
 app = FastAPI(title="PersonaOps Control Plane", version="0.3.0")
@@ -56,6 +58,11 @@ def health() -> dict:
         "version": "0.3.0",
         "store_backend": settings.store_backend,
     }
+
+
+@app.get("/temporal/bootstrap")
+def temporal_bootstrap() -> dict:
+    return start_worker_dry_run()
 
 
 @app.post("/events")
@@ -292,12 +299,21 @@ def outbox_enqueue(data: OutboxEnqueueRequest) -> dict:
 
 @app.post("/outbox/process_once")
 def outbox_process_once() -> dict:
-    def sender(msg: OutboxMessage) -> None:
-        # placeholder sender; integrate real channel senders in v0.4
+    sender = build_sender(settings)
+
+    # test hook for deterministic failure path
+    def wrapped_sender(msg: OutboxMessage) -> None:
         if msg.body.get("force_fail"):
             raise RuntimeError("forced send failure for testing")
+        sender(msg)
 
-    return process_outbox_once(store, sender, max_retries=settings.outbox_max_retries)
+    try:
+        result = process_outbox_once(store, wrapped_sender, max_retries=settings.outbox_max_retries)
+    except SenderError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    result["mode"] = settings.outbound_mode
+    return result
 
 
 @app.get("/outbox")

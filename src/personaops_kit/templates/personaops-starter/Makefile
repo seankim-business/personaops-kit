@@ -1,7 +1,7 @@
 PYTHON ?= python3
 VENV ?= .venv
 
-.PHONY: setup run test compile clean package
+.PHONY: setup run test compile clean package promptfoo postgres-up postgres-down postgres-smoke
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -19,6 +19,18 @@ compile:
 
 package:
 	. $(VENV)/bin/activate && python -m pip install --upgrade build && python -m build
+
+promptfoo:
+	. $(VENV)/bin/activate && ./scripts/run_promptfoo_gate.sh
+
+postgres-up:
+	docker compose -f docker-compose.postgres.yml up -d
+
+postgres-down:
+	docker compose -f docker-compose.postgres.yml down -v
+
+postgres-smoke:
+	. $(VENV)/bin/activate && ./scripts/test_postgres_backend.sh
 
 clean:
 	rm -rf $(VENV) .pytest_cache implementation/__pycache__ implementation/tests/__pycache__ src/personaops_kit/__pycache__ tests_kit/__pycache__ build dist *.egg-info src/*.egg-info src/personaops_kit/*.egg-info

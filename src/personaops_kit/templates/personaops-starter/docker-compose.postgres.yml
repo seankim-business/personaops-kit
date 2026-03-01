@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: personaops-postgres
+    environment:
+      POSTGRES_DB: personaops
+      POSTGRES_USER: personaops
+      POSTGRES_PASSWORD: personaops
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U personaops -d personaops"]
+      interval: 3s
+      timeout: 3s
+      retries: 20

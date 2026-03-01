@@ -5,6 +5,15 @@
 ```bash
 make setup
 make test
+make promptfoo   # skips automatically when OPENAI_API_KEY is missing
+```
+
+Optional Postgres backend smoke:
+
+```bash
+make postgres-up
+make postgres-smoke
+make postgres-down
 ```
 
 ## 2) Build artifacts
@@ -24,6 +33,8 @@ python -m pip install dist/personaops_kit-*.whl
 TMP=$(mktemp -d)
 personaops-kit inject "$TMP" --profile openclaw --name personaops --force
 test -f "$TMP/personaops/implementation/control_plane.py"
+personaops-kit inject "$TMP" --profile nanobot --name nano-personaops --force
+test -f "$TMP/nano-personaops/implementation/control_plane.py"
 ```
 
 ## 4) Publish (optional)

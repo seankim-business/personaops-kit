@@ -59,9 +59,29 @@
 - Package build: PASS (`python -m build`)
 - Package injection smoke test (OpenClaw + NanoBot profile): PASS
 
-### Next Loop (SDD -> Impl v0.6)
-1. Integrate real outbound sender per channel (Discord/Slack adapters).
-2. Implement Langfuse span taxonomy + trace correlation IDs across endpoints.
-3. Add Promptfoo CI gate execution step with managed API key flow.
-4. Implement Temporal worker registration + workflow execution harness.
-5. Add Postgres integration test profile (docker-compose).
+### Completed (v0.6 progress)
+- Integrated outbound sender abstraction (`implementation/sender.py`) with mode switch:
+  - `mock` (default safe mode)
+  - `webhook` (Discord/Slack webhook sends)
+- Updated control plane outbox processing to use sender factory (`/outbox/process_once`)
+- Added Temporal worker dry-run harness (`implementation/temporal_worker.py`) + bootstrap endpoint (`GET /temporal/bootstrap`)
+- Added promptfoo gate script (`scripts/run_promptfoo_gate.sh`) and CI integration
+- Added Postgres integration profile artifacts:
+  - `docker-compose.postgres.yml`
+  - `scripts/test_postgres_backend.sh`
+  - `implementation/tests/test_postgres_integration.py` (integration marker)
+- Expanded tests for sender + temporal worker (`implementation/tests/test_sender.py`, `test_temporal_worker.py`)
+- Synced packaged starter template with latest runtime files
+
+### Validation (latest)
+- Pytest execution: PASS (`23 passed, 1 skipped`)
+- Promptfoo gate: PASS (`2 passed, 0 failed`)
+- Package build: PASS (`python -m build`)
+- Package injection smoke test (OpenClaw + NanoBot profile): PASS
+
+### Next Loop (SDD -> Impl v0.7)
+1. Wire real outbound channel adapters beyond webhook (OpenClaw message-bridge sender).
+2. Implement Langfuse span taxonomy with deterministic trace/event correlation.
+3. Implement Temporal worker runtime registration + workflow execution harness.
+4. Add CI job matrix for memory/postgres backends and cached promptfoo execution.
+5. Add policy regression corpus (high-risk approval bypass/denial scenarios).

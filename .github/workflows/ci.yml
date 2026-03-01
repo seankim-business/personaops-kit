@@ -17,14 +17,41 @@ jobs:
         run: pip install -r requirements.txt
       - name: Install package in editable mode
         run: pip install -e .
-
       - name: Run tests
         run: pytest
-
-      - name: Promptfoo regression (optional when OPENAI_API_KEY is configured)
-        if: ${{ secrets.OPENAI_API_KEY != '' }}
+      - name: Promptfoo regression gate (skip when key missing)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          npm i -g promptfoo
-          promptfoo eval -c evals/promptfooconfig.yaml
+        run: ./scripts/run_promptfoo_gate.sh
+
+  postgres-integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: personaops
+          POSTGRES_USER: personaops
+          POSTGRES_PASSWORD: personaops
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U personaops -d personaops"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      PERSONAOPS_POSTGRES_DSN: postgresql://personaops:personaops@localhost:5432/personaops
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - name: Install package in editable mode
+        run: pip install -e .
+      - name: Apply schema
+        run: psql "$PERSONAOPS_POSTGRES_DSN" -f implementation/sql/001_init.sql
+      - name: Run postgres integration tests
+        run: pytest -m integration -q

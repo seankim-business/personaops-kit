@@ -32,3 +32,6 @@ where = ["src"]
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["implementation/tests", "tests_kit"]
+markers = [
+  "integration: tests requiring external services (e.g., postgres)",
+]
