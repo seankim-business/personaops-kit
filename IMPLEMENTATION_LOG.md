@@ -94,8 +94,21 @@
 - Package build: PASS (`python -m build`)
 - Package injection smoke test (OpenClaw + NanoBot profile): PASS
 
-### Next Loop (SDD -> Impl v0.8)
+### Completed (v0.8 progress)
+- Added policy regression corpus tests (`implementation/tests/test_policy_regression.py`)
+  - high-risk categories -> requires_approval
+  - low-risk internal update -> allow
+  - unknown categories -> deny
+- Synced regression corpus into packaged starter template
+
+### Validation (latest)
+- Pytest execution: PASS (`29 passed, 1 skipped`)
+- Promptfoo gate: PASS (`2 passed, 0 failed`)
+- Package build: PASS (`python -m build`)
+- Package injection smoke test: PASS (starter includes policy regression test)
+
+### Next Loop (SDD -> Impl v0.9)
 1. Implement Langfuse span taxonomy with deterministic trace/event correlation.
 2. Implement Temporal worker runtime registration + workflow execution harness (non-dry-run).
-3. Add policy regression corpus (high-risk approval bypass/denial scenarios) + CI gate.
-4. Add channel-specific sender adapters for richer payloads (embeds/attachments) with approval guardrails.
+3. Add channel-specific sender adapters for richer payloads (embeds/attachments) with approval guardrails.
+4. Add policy regression CI job separation and report artifact upload.
