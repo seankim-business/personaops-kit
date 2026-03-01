@@ -16,6 +16,10 @@ class Settings:
     outbound_mode: str = field(default_factory=lambda: os.getenv("PERSONAOPS_OUTBOUND_MODE", "mock"))
     discord_webhook_url: str = field(default_factory=lambda: os.getenv("PERSONAOPS_DISCORD_WEBHOOK_URL", ""))
     slack_webhook_url: str = field(default_factory=lambda: os.getenv("PERSONAOPS_SLACK_WEBHOOK_URL", ""))
+    openclaw_cli_path: str = field(default_factory=lambda: os.getenv("PERSONAOPS_OPENCLAW_CLI_PATH", "openclaw"))
+    openclaw_cli_timeout_sec: int = field(
+        default_factory=lambda: int(os.getenv("PERSONAOPS_OPENCLAW_CLI_TIMEOUT_SEC", "20"))
+    )
 
 
 

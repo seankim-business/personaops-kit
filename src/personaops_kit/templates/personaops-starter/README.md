@@ -48,6 +48,11 @@ export PERSONAOPS_OUTBOUND_MODE=mock
 export PERSONAOPS_OUTBOUND_MODE=webhook
 export PERSONAOPS_DISCORD_WEBHOOK_URL='https://discord.com/api/webhooks/...'
 export PERSONAOPS_SLACK_WEBHOOK_URL='https://hooks.slack.com/services/...'
+
+# openclaw CLI bridge mode (real sends through local OpenClaw runtime)
+export PERSONAOPS_OUTBOUND_MODE=openclaw
+export PERSONAOPS_OPENCLAW_CLI_PATH='openclaw'
+export PERSONAOPS_OPENCLAW_CLI_TIMEOUT_SEC=20
 ```
 
 Seed GitHub issues (optional):

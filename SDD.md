@@ -94,9 +94,13 @@ Allowed transitions are defined in `flows/default_flow.yaml`.
 - Sender mode (`PERSONAOPS_OUTBOUND_MODE`):
   - `mock` (default): trace-only send for safe test/dev environments.
   - `webhook`: real sends via channel webhooks (Discord/Slack).
+  - `openclaw`: real sends via local OpenClaw CLI bridge.
 - Webhook mode requires channel-specific URLs:
   - `PERSONAOPS_DISCORD_WEBHOOK_URL`
   - `PERSONAOPS_SLACK_WEBHOOK_URL`
+- OpenClaw bridge mode settings:
+  - `PERSONAOPS_OPENCLAW_CLI_PATH`
+  - `PERSONAOPS_OPENCLAW_CLI_TIMEOUT_SEC`
 
 ## 8. Context Compilation
 

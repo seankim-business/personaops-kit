@@ -79,9 +79,23 @@
 - Package build: PASS (`python -m build`)
 - Package injection smoke test (OpenClaw + NanoBot profile): PASS
 
-### Next Loop (SDD -> Impl v0.7)
-1. Wire real outbound channel adapters beyond webhook (OpenClaw message-bridge sender).
-2. Implement Langfuse span taxonomy with deterministic trace/event correlation.
-3. Implement Temporal worker runtime registration + workflow execution harness.
-4. Add CI job matrix for memory/postgres backends and cached promptfoo execution.
-5. Add policy regression corpus (high-risk approval bypass/denial scenarios).
+### Completed (v0.7 progress)
+- Added OpenClaw CLI bridge sender mode (`PERSONAOPS_OUTBOUND_MODE=openclaw`) in `implementation/sender.py`
+- Added sender mode settings for OpenClaw bridge (`implementation/settings.py`)
+- Extended sender test coverage for CLI success/failure (`implementation/tests/test_sender.py`)
+- Added Postgres integration CI job (`.github/workflows/ci.yml`)
+- Added temporal bootstrap endpoint (`GET /temporal/bootstrap`) for worker harness readiness checks
+- Added local Postgres docker profile and smoke runner (`docker-compose.postgres.yml`, `scripts/test_postgres_backend.sh`)
+- Added promptfoo gate wrapper script and CI wiring (`scripts/run_promptfoo_gate.sh`)
+
+### Validation (latest)
+- Pytest execution: PASS (`24 passed, 1 skipped`)
+- Promptfoo gate: PASS (`2 passed, 0 failed`)
+- Package build: PASS (`python -m build`)
+- Package injection smoke test (OpenClaw + NanoBot profile): PASS
+
+### Next Loop (SDD -> Impl v0.8)
+1. Implement Langfuse span taxonomy with deterministic trace/event correlation.
+2. Implement Temporal worker runtime registration + workflow execution harness (non-dry-run).
+3. Add policy regression corpus (high-risk approval bypass/denial scenarios) + CI gate.
+4. Add channel-specific sender adapters for richer payloads (embeds/attachments) with approval guardrails.
